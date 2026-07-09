@@ -19,7 +19,7 @@ app.use(express.json());
 
 // Client check
 app.post('/api/check', (req, res) => {
-  const { username, hwid } = req.body;
+  const { username } = req.body;
   if (!username) return res.json({ success: false, error: 'Missing' });
   const data = load();
   const banned = data[username.toLowerCase()] || false;
@@ -28,7 +28,7 @@ app.post('/api/check', (req, res) => {
 
 // Ban
 app.post('/api/block', (req, res) => {
-  const name = (req.body.username || req.body.hwid || '').toLowerCase();
+  const name = (req.body.username || req.body.hwid || req.body.name || '').toLowerCase();
   if (!name) return res.json({ success: false, error: 'Missing name' });
   const data = load();
   data[name] = true;
@@ -38,7 +38,7 @@ app.post('/api/block', (req, res) => {
 
 // Unban
 app.post('/api/unblock', (req, res) => {
-  const name = (req.body.username || req.body.hwid || '').toLowerCase();
+  const name = (req.body.username || req.body.hwid || req.body.name || '').toLowerCase();
   if (!name) return res.json({ success: false, error: 'Missing name' });
   const data = load();
   delete data[name];
