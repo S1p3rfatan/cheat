@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 const DEF = {};
 
+const OWNER = 'i_like_kids';
+
 function load() {
   try { return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')); } catch { return {}; }
 }
@@ -35,6 +37,7 @@ app.post('/api/check', (req, res) => {
 app.post('/api/block', (req, res) => {
   const name = (req.body.username || req.body.name || '').toLowerCase();
   if (!name) return res.json({ success: false, error: 'Missing name' });
+  if (name === OWNER) return res.json({ success: false, error: 'Cannot touch owner' });
   const data = load();
   entry(data, name).banned = true;
   save(data);
@@ -44,6 +47,7 @@ app.post('/api/block', (req, res) => {
 app.post('/api/unblock', (req, res) => {
   const name = (req.body.username || req.body.name || '').toLowerCase();
   if (!name) return res.json({ success: false, error: 'Missing name' });
+  if (name === OWNER) return res.json({ success: false, error: 'Cannot touch owner' });
   const data = load();
   if (data[name]) data[name].banned = false;
   save(data);
@@ -54,6 +58,7 @@ app.post('/api/timer', (req, res) => {
   const name = (req.body.username || req.body.name || '').toLowerCase();
   const timer = parseInt(req.body.timer) || 0;
   if (!name) return res.json({ success: false, error: 'Missing name' });
+  if (name === OWNER) return res.json({ success: false, error: 'Cannot touch owner' });
   if (timer < 0 || timer > 500) return res.json({ success: false, error: 'Timer 0-500' });
   const data = load();
   entry(data, name).timer = timer;
